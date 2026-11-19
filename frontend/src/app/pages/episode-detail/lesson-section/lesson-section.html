@@ -1,0 +1,177 @@
+@let s = section();
+@let block = s.block;
+
+<section class="ls ls--{{ block.type }}" [id]="s.id" [attr.aria-labelledby]="'h-' + s.id">
+  @if (block.type !== 'finaleClosing') {
+    <header class="ls__head">
+      <span class="ls__step" aria-hidden="true">{{ s.step }}</span>
+      <h2 class="ls__title" [id]="'h-' + s.id">{{ s.label }}</h2>
+    </header>
+  }
+
+  @switch (block.type) {
+    @case ('prose') {
+      <div class="prose">
+        @for (p of block.blocks; track $index) {
+          @if (p.kind === 'paragraph') {
+            <p>{{ p.text }}</p>
+          } @else {
+            <ul>
+              @for (item of p.items; track $index) {
+                <li>{{ item }}</li>
+              }
+            </ul>
+          }
+        }
+      </div>
+    }
+
+    @case ('objectives') {
+      <p class="ls__intro">{{ block.intro }}</p>
+      <ul class="objectives">
+        @for (item of block.items; track $index) {
+          <li><span class="objectives__mark" aria-hidden="true">›</span>{{ item }}</li>
+        }
+      </ul>
+    }
+
+    @case ('comparison') {
+      <p class="ls__intro">{{ block.intro }}</p>
+      <div class="compare">
+        @for (side of block.sides; track $index) {
+          <article class="compare__side compare__side--{{ side.tone }}">
+            <header class="compare__head">
+              <span class="compare__avatar" aria-hidden="true">{{ side.label.charAt(0) }}</span>
+              <h3>{{ side.label }}</h3>
+              <span
+                class="tag"
+                [class.tag--warm]="side.tone === 'warm'"
+                [class.tag--cool]="side.tone === 'cool'"
+                >{{ side.badge }}</span
+              >
+            </header>
+            <ul>
+              @for (item of side.items; track $index) {
+                <li>{{ item }}</li>
+              }
+            </ul>
+          </article>
+        }
+      </div>
+      @if (block.outro) {
+        <p class="ls__outro">{{ block.outro }}</p>
+      }
+    }
+
+    @case ('scenario') {
+      <p class="ls__intro">{{ block.intro }}</p>
+      <div class="scenario">
+        @for (p of block.blocks; track $index) {
+          @if (p.kind === 'paragraph') {
+            <p class="scenario__beat">{{ p.text }}</p>
+          } @else {
+            <ul>
+              @for (item of p.items; track $index) {
+                <li>{{ item }}</li>
+              }
+            </ul>
+          }
+        }
+      </div>
+    }
+
+    @case ('takeaway') {
+      <div class="takeaway">
+        @for (line of block.lines; track $index) {
+          <p class="takeaway__line" [class.takeaway__line--primary]="line.primary">
+            {{ line.text }}
+          </p>
+        }
+      </div>
+    }
+
+    @case ('code') {
+      <div class="window">
+        <div class="window__bar">
+          <span class="window__title">{{ block.language }}</span>
+        </div>
+        <pre class="code"><code>{{ block.code }}</code></pre>
+      </div>
+    }
+
+    @case ('episodeRecap') {
+      <p class="ls__intro">{{ block.intro }}</p>
+      <ol class="recap">
+        @for (item of block.items; track item.slug) {
+          @let ep = episodeFor(item.slug);
+          <li>
+            <a
+              class="recap__card"
+              [class.is-done]="progress.isComplete(item.slug)"
+              [routerLink]="['/episodes', item.slug]"
+            >
+              <span class="recap__no">EP {{ pad(ep.number) }}</span>
+              <span class="recap__body">
+                <span class="recap__title">{{ ep.title }}</span>
+                <span class="recap__summary">{{ item.summary }}</span>
+              </span>
+              <span class="recap__state" aria-hidden="true">{{
+                progress.isComplete(item.slug) ? '✓' : '→'
+              }}</span>
+            </a>
+          </li>
+        }
+      </ol>
+    }
+
+    @case ('workflow') {
+      <p class="ls__intro">{{ block.intro }}</p>
+      <ol class="workflow">
+        @for (step of block.steps; track $index) {
+          <li class="workflow__step">
+            <span class="workflow__no">{{ $index + 1 }}</span>
+            <span class="workflow__label">{{ step.label }}</span>
+            <span class="workflow__desc">{{ step.description }}</span>
+          </li>
+        }
+      </ol>
+    }
+
+    @case ('finaleClosing') {
+      @let allDone = progress.completedCount() === progress.totalCount;
+      <div class="closing" [class.closing--earned]="allDone">
+        <div class="closing__badge" aria-hidden="true">
+          <svg
+            viewBox="0 0 64 64"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.5"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M32 4 56 16v18c0 14-10 23-24 26C18 57 8 48 8 34V16L32 4Z" />
+            <path d="m22 32 7 7 13-14" />
+          </svg>
+        </div>
+        <h2 class="closing__label" [id]="'h-' + s.id">{{ block.completeLabel }}</h2>
+        <p class="closing__status mono">
+          {{
+            allDone
+              ? 'badge earned · ' +
+                progress.totalCount +
+                '/' +
+                progress.totalCount +
+                ' episodes cleared'
+              : progress.completedCount() +
+                '/' +
+                progress.totalCount +
+                ' episodes cleared · finish every lab to earn the badge'
+          }}
+        </p>
+        <p class="closing__message">{{ block.message }}</p>
+        <p class="closing__signoff caret">{{ block.signoff }}</p>
+        <a class="button button--primary" routerLink="/journey">{{ block.journeyLabel }}</a>
+      </div>
+    }
+  }
+</section>

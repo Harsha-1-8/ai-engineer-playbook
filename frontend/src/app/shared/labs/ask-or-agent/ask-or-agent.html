@@ -1,0 +1,78 @@
+<div class="window">
+  <div class="window__bar">
+    <span class="window__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="window__title"
+      >lab/mode-picker — {{ finished() ? 'done' : position() + 1 + ' of ' + cards.length }}</span
+    >
+    <span class="tag tag--accent">EP 06</span>
+  </div>
+  <div class="window__body">
+    <p class="lab-brief">
+      <strong>information or action?</strong> Pick the mode for each situation. The mode follows the
+      goal.
+    </p>
+
+    @if (!finished()) {
+      <div class="aa__progress" aria-hidden="true">
+        @for (c of cards; track $index) {
+          <span
+            class="aa__pip"
+            [class.is-done]="$index < position() || ($index === position() && answer() !== null)"
+          ></span>
+        }
+      </div>
+
+      @let current = card();
+      <article class="aa__card" [class.aa__card--answered]="answer() !== null" aria-live="polite">
+        <p class="aa__situation">{{ current.situation }}</p>
+
+        @if (answer() === null) {
+          <div class="aa__choices">
+            <button type="button" class="aa__btn aa__btn--ask" (click)="choose('ask')">
+              <span class="aa__icon" aria-hidden="true">?</span> Ask
+            </button>
+            <button type="button" class="aa__btn aa__btn--agent" (click)="choose('agent')">
+              <span class="aa__icon" aria-hidden="true">⚙</span> Agent
+            </button>
+          </div>
+        } @else {
+          <div
+            class="verdict"
+            [class.verdict--success]="isRight()"
+            [class.verdict--danger]="!isRight()"
+          >
+            <p class="verdict__title">
+              {{ isRight() ? '✓' : '✗' }} {{ current.mode === 'ask' ? 'Ask' : 'Agent' }}
+            </p>
+            <p class="verdict__text">{{ current.why }}</p>
+          </div>
+          <div class="lab-actions">
+            <button type="button" class="button button--primary" (click)="next()">
+              {{ position() === cards.length - 1 ? 'see result' : 'next card →' }}
+            </button>
+          </div>
+        }
+      </article>
+    } @else {
+      <div class="verdict" [class.verdict--success]="passed()" [class.verdict--warning]="!passed()">
+        <p class="verdict__title">
+          {{ passed() ? '✓' : '~' }} {{ correct() }}/{{ cards.length }} correct
+        </p>
+        <p class="verdict__text">
+          {{
+            passed()
+              ? 'Ask when you need to understand. Agent when you need work done. Review either way.'
+              : 'Score ' +
+                passMark +
+                '+ to clear the lab. Ask yourself: do I need an answer, or do I need the work done?'
+          }}
+        </p>
+      </div>
+      <div class="lab-actions">
+        <button type="button" class="button button--ghost button--small" (click)="restart()">
+          play again
+        </button>
+      </div>
+    }
+  </div>
+</div>

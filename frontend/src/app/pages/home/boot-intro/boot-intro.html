@@ -1,0 +1,25 @@
+@if (active()) {
+  <div class="boot" [class.boot--leaving]="leaving()" (click)="skip()" aria-hidden="true">
+    <div class="boot__term">
+      @for (line of lines; track $index) {
+        @if (isShown($index)) {
+          <p
+            class="boot__line"
+            [class.boot__line--cmd]="$index === 0"
+            [class.boot__line--ready]="$last"
+          >
+            <span>{{ line.text }}</span>
+            @if (line.status) {
+              <span class="boot__dots"></span>
+              <span class="boot__ok">{{ line.status }}</span>
+            }
+          </p>
+        }
+      }
+      @if (typing()) {
+        <span class="boot__caret"></span>
+      }
+    </div>
+    <p class="boot__skip mono">press any key to skip</p>
+  </div>
+}

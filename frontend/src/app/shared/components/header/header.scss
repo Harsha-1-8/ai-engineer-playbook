@@ -1,0 +1,272 @@
+.site-header {
+  /* Stays put while the page underneath transitions. */
+  view-transition-name: site-header;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--header-h);
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+}
+
+.site-header__inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  height: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;
+  padding-inline: var(--space-5);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
+
+  &:hover {
+    color: var(--text);
+  }
+}
+
+.brand__mark {
+  display: inline-grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 0.85rem;
+  font-weight: 700;
+}
+
+.brand__dim {
+  color: var(--text-faint);
+}
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+}
+
+.site-nav__list {
+  display: flex;
+  gap: var(--space-1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.site-nav__link {
+  display: block;
+  padding: 0.4rem 0.7rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--text-muted);
+
+  &:hover {
+    color: var(--text);
+    background: var(--surface-2);
+  }
+
+  &.is-active {
+    color: var(--accent);
+  }
+
+  &.is-active::before {
+    content: './';
+    color: var(--text-faint);
+  }
+}
+
+/* Command palette trigger: a search pill with the shortcut on desktop,
+   just the icon on phones. */
+.search-trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  height: 2.25rem;
+  padding: 0 0.5rem 0 0.7rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-faint);
+  cursor: pointer;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease;
+
+  &:hover {
+    color: var(--text);
+    border-color: var(--accent-line);
+  }
+}
+
+.search-trigger__icon {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.search-trigger__kbd {
+  padding: 0.05rem 0.4rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+/* Light/dark toggle: a sun and a moon stacked in one button; the active
+   one rotates in, the other rotates out. */
+.theme-toggle {
+  position: relative;
+  display: inline-grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  padding: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: var(--surface);
+  color: var(--text-muted);
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    color 160ms ease,
+    border-color 160ms ease,
+    background-color 160ms ease;
+
+  &:hover {
+    color: var(--accent);
+    border-color: var(--accent-line);
+  }
+}
+
+.theme-toggle__icon {
+  position: absolute;
+  width: 1.1rem;
+  height: 1.1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition:
+    transform 380ms cubic-bezier(0.3, 1.4, 0.5, 1),
+    opacity 220ms ease;
+}
+
+.theme-toggle__moon {
+  opacity: 0;
+  transform: rotate(-90deg) scale(0.4);
+}
+
+.theme-toggle.is-light {
+  .theme-toggle__sun {
+    opacity: 0;
+    transform: rotate(90deg) scale(0.4);
+  }
+
+  .theme-toggle__moon {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.progress-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0.25rem 0.65rem 0.25rem 0.3rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text);
+
+  &:hover {
+    color: var(--text);
+    border-color: var(--accent-line);
+  }
+}
+
+.progress-pill.is-pop .progress-pill__ring {
+  animation: ring-pop 700ms cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+
+@keyframes ring-pop {
+  40% {
+    transform: scale(1.35);
+    box-shadow: 0 0 16px var(--accent);
+  }
+}
+
+.progress-pill__ring {
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 50%;
+  background:
+    radial-gradient(closest-side, var(--bg) 70%, transparent 72%),
+    conic-gradient(var(--accent) calc(var(--p, 0) * 1%), var(--surface-3) 0);
+  transition: background 300ms ease;
+}
+
+@media (max-width: 34rem) {
+  .brand__text {
+    display: none;
+  }
+}
+
+@media (max-width: 40rem) {
+  .site-header__inner {
+    padding-inline: var(--space-4);
+  }
+
+  .site-nav {
+    gap: var(--space-2);
+  }
+
+  .site-nav__link {
+    padding: 0.55rem 0.6rem;
+  }
+
+  .site-nav__link.is-active::before {
+    content: none;
+  }
+}
+
+@media (max-width: 40rem) {
+  .search-trigger {
+    width: 2.25rem;
+    justify-content: center;
+    padding: 0;
+  }
+
+  .search-trigger__text,
+  .search-trigger__kbd {
+    display: none;
+  }
+}
+
+/* Narrow phones: the logo already links home, the progress pill links to the
+   journey, and search reaches everything, so the text links can go. */
+@media (max-width: 30rem) {
+  .site-nav__list {
+    display: none;
+  }
+}

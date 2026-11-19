@@ -1,0 +1,126 @@
+.sb {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.sb__reqs {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.9rem;
+}
+
+.sb__req-no {
+  display: inline-block;
+  min-width: 2rem;
+  margin-right: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--accent);
+}
+
+.sb__code {
+  padding: var(--space-3) 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--code-bg);
+  overflow-x: auto;
+}
+
+.sb__line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+  width: 100%;
+  min-height: 1.5rem;
+  padding: 0.1rem var(--space-3);
+  border: 0;
+  border-left: 2px solid transparent;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background: var(--surface);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+
+  &.is-flagged {
+    background: var(--warm-soft);
+    border-left-color: var(--warning);
+  }
+
+  &.is-hit {
+    background: var(--accent-soft);
+    border-left-color: var(--accent);
+  }
+
+  &.is-miss {
+    outline: 1px dashed var(--danger);
+    outline-offset: -1px;
+  }
+
+  &.is-false {
+    opacity: 0.6;
+    text-decoration: line-through;
+  }
+}
+
+.sb__no {
+  min-width: 1.4rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  text-align: right;
+  color: var(--text-faint);
+}
+
+.is-flagged .sb__no {
+  color: var(--warning);
+}
+
+.sb__src {
+  font-size: 0.8rem;
+  white-space: pre;
+  color: var(--text);
+}
+
+.sb__note {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0.15rem var(--space-3) var(--space-2) 2.9rem;
+  font-size: 0.82rem;
+  color: var(--danger);
+
+  &.is-found {
+    color: var(--text-muted);
+  }
+}
+
+@media (max-width: 40rem) {
+  .sb__reqs {
+    font-size: 0.85rem;
+  }
+
+  .sb__line {
+    min-height: 2.25rem;
+    padding: 0.35rem var(--space-2);
+  }
+
+  .sb__src {
+    font-size: 0.72rem;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .sb__note {
+    margin-left: var(--space-3);
+    flex-wrap: wrap;
+    font-size: 0.78rem;
+  }
+}

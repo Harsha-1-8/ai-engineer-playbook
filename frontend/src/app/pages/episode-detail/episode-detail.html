@@ -1,0 +1,206 @@
+@if (episode(); as ep) {
+  <!-- Keyed on the slug so labs and the quiz start fresh when you move between episodes. -->
+  @for (key of [ep.slug]; track key) {
+    <div class="read-bar" aria-hidden="true"><span [style.width.%]="readProgress()"></span></div>
+
+    <article class="episode">
+      <!-- Hero -->
+      <header class="hero" [class.hero--finale]="ep.finale">
+        <div class="hero__inner">
+          <nav class="hero__crumbs mono" aria-label="Breadcrumb">
+            <a routerLink="/journey">~/journey</a><span aria-hidden="true">/</span>{{ ep.slug }}.md
+          </nav>
+
+          <p class="hero__eyebrow mono">
+            @if (ep.finale) {
+              <span class="tag tag--accent">chapter 01 · finale</span>
+            } @else {
+              <span class="tag tag--accent">EP {{ pad(ep.number) }}</span>
+            }
+            @if (complete()) {
+              <span class="tag tag--accent">✓ complete</span>
+            }
+          </p>
+
+          <h1 class="hero__title caret" [style.view-transition-name]="'ep-title-' + ep.number">
+            {{ ep.title }}
+          </h1>
+          <p class="hero__summary">{{ ep.summary }}</p>
+
+          <ul class="hero__meta mono" role="list">
+            @if (ep.durationMinutes) {
+              <li>⏱ {{ ep.durationMinutes }} min</li>
+            }
+            @if (lab()) {
+              <li [class.is-done]="status().lab">{{ status().lab ? '✓' : '◇' }} 1 lab</li>
+            }
+            @if (quiz().length) {
+              <li [class.is-done]="status().quizScore !== null">
+                {{ status().quizScore !== null ? '✓' : '◇' }} {{ quiz().length }} questions
+              </li>
+            }
+          </ul>
+
+          @if (ep.finale) {
+            <svg class="constellation" viewBox="0 0 600 110" aria-hidden="true">
+              <path d="M 40 70 L 125 40 L 210 74 L 295 36 L 380 72 L 465 42 L 560 60" />
+              @for (lit of constellation(); track $index) {
+                <circle
+                  [attr.cx]="[40, 125, 210, 295, 380, 465, 560][$index]"
+                  [attr.cy]="[70, 40, 74, 36, 72, 42, 60][$index]"
+                  r="7"
+                  [class.is-lit]="lit"
+                />
+              }
+            </svg>
+            <p class="constellation__caption mono">
+              {{ progress.completedCount() }}/{{ progress.totalCount }} episodes cleared. Each node
+              lights up when you finish one.
+            </p>
+          }
+        </div>
+      </header>
+
+      <!-- Mobile: a sticky, swipeable jump bar replaces the sidebar outline. -->
+      <nav class="jump" aria-label="Jump to section">
+        @for (entry of outline(); track entry.id) {
+          <a
+            class="jump__chip mono"
+            [class.jump__chip--lab]="entry.interactive"
+            [href]="'#' + entry.id"
+            (click)="$event.preventDefault(); scrollTo(entry.id)"
+            >{{ entry.step }} {{ entry.label }}</a
+          >
+        }
+      </nav>
+
+      <div class="episode__layout">
+        <!-- Outline -->
+        <aside class="outline" aria-label="On this page">
+          <p class="outline__title mono">outline</p>
+          <ol class="outline__list">
+            @for (entry of outline(); track entry.id) {
+              <li>
+                <a
+                  class="outline__link"
+                  [class.outline__link--lab]="entry.interactive"
+                  [href]="'#' + entry.id"
+                  (click)="$event.preventDefault(); scrollTo(entry.id)"
+                >
+                  <span class="outline__step">{{ entry.step }}</span
+                  >{{ entry.label }}
+                </a>
+              </li>
+            }
+          </ol>
+        </aside>
+
+        <div class="episode__content">
+          @for (section of leadSections(); track section.id) {
+            <app-lesson-section [section]="section" />
+          }
+
+          @if (lab(); as kind) {
+            <section class="interactive" id="lab" aria-labelledby="h-lab">
+              <header class="interactive__head">
+                <span class="interactive__step mono" aria-hidden="true">{{ labStep() }}</span>
+                <h2 id="h-lab">{{ labLabel }}</h2>
+                @if (status().lab) {
+                  <span class="tag tag--accent">✓ solved</span>
+                } @else {
+                  <span class="tag">play it</span>
+                }
+              </header>
+              @switch (kind) {
+                @case ('token-budget') {
+                  <app-token-budget-lab (solved)="onLabSolved($event)" />
+                }
+                @case ('context-reset') {
+                  <app-context-reset-lab (solved)="onLabSolved($event)" />
+                }
+                @case ('model-match') {
+                  <app-model-match-lab (solved)="onLabSolved($event)" />
+                }
+                @case ('log-hunt') {
+                  <app-log-hunt-lab (solved)="onLabSolved($event)" />
+                }
+                @case ('output-shaper') {
+                  <app-output-shaper-lab (solved)="onLabSolved($event)" />
+                }
+                @case ('ask-or-agent') {
+                  <app-ask-or-agent-lab (solved)="onLabSolved($event)" />
+                }
+                @case ('spot-the-bug') {
+                  <app-spot-the-bug-lab (solved)="onLabSolved($event)" />
+                }
+                @case ('workflow-builder') {
+                  <app-workflow-builder-lab
+                    [steps]="workflowSteps()"
+                    (solved)="onLabSolved($event)"
+                  />
+                }
+              }
+            </section>
+          }
+
+          @if (quiz().length) {
+            <section class="interactive" id="quiz" aria-labelledby="h-quiz">
+              <header class="interactive__head">
+                <span class="interactive__step mono" aria-hidden="true">{{ quizStep() }}</span>
+                <h2 id="h-quiz">{{ quizLabel }}</h2>
+                <span class="tag">{{ quiz().length }} questions</span>
+              </header>
+              <app-quiz
+                [questions]="quiz()"
+                [bestScore]="status().quizScore"
+                (finished)="onQuizFinished($event)"
+              />
+            </section>
+          }
+
+          @for (section of tailSections(); track section.id) {
+            <app-lesson-section [section]="section" />
+          }
+
+          @if (complete() && !ep.finale) {
+            <div class="done-banner">
+              <p class="done-banner__title mono">✓ episode {{ pad(ep.number) }} complete</p>
+              @if (next(); as n) {
+                <a class="button button--primary" [routerLink]="['/episodes', n.slug]"
+                  >next: {{ n.title }} →</a
+                >
+              }
+            </div>
+          }
+
+          <nav class="pager" aria-label="Episode navigation">
+            @if (previous(); as p) {
+              <a class="pager__card" [routerLink]="['/episodes', p.slug]">
+                <span class="pager__label mono">← prev · EP {{ pad(p.number) }}</span>
+                <span class="pager__title">{{ p.title }}</span>
+              </a>
+            } @else {
+              <span></span>
+            }
+            @if (next(); as n) {
+              <a class="pager__card pager__card--next" [routerLink]="['/episodes', n.slug]">
+                <span class="pager__label mono">next · EP {{ pad(n.number) }} →</span>
+                <span class="pager__title">{{ n.title }}</span>
+              </a>
+            }
+          </nav>
+        </div>
+      </div>
+    </article>
+  }
+} @else {
+  <section class="not-found">
+    <pre class="not-found__code mono" aria-hidden="true">
+$ cat {{ slug() }}.md
+cat: {{ slug() }}.md: No such file or directory</pre
+    >
+    <h1>Episode not found</h1>
+    <p>That episode doesn't exist (yet).</p>
+    <a class="button button--primary" routerLink="/journey">back to the journey</a>
+  </section>
+}

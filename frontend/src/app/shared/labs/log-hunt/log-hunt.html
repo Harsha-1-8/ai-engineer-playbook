@@ -1,0 +1,114 @@
+<div class="window">
+  <div class="window__bar">
+    <span class="window__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="window__title">terminal — npm start (showing 15 of 712 lines)</span>
+    <span class="tag tag--accent">EP 04</span>
+  </div>
+  <div class="window__body">
+    <p class="lab-brief">
+      <strong>hunt the signal:</strong> saving a user crashes. Click only the lines Copilot actually
+      needs, then add the expected behavior. Rohan would paste all 712 lines.
+    </p>
+
+    <ol class="lh" aria-label="Log output. Activate a line to include it.">
+      @for (line of lines; track line.id) {
+        <li>
+          <button
+            type="button"
+            class="lh__line lh__line--{{ line.level }}"
+            [class.is-picked]="isPicked(line.id)"
+            [class.is-hit]="reveal(line.id) === 'hit'"
+            [class.is-miss]="reveal(line.id) === 'miss'"
+            [class.is-stray]="reveal(line.id) === 'stray'"
+            [attr.aria-pressed]="isPicked(line.id)"
+            (click)="toggle(line.id)"
+          >
+            <span class="lh__no" aria-hidden="true">{{ line.id }}</span>
+            <span class="lh__text">{{ line.text }}</span>
+          </button>
+        </li>
+      }
+    </ol>
+
+    <button
+      type="button"
+      class="option lh__expected"
+      [attr.aria-pressed]="expected()"
+      (click)="toggleExpected()"
+    >
+      <span class="check" aria-hidden="true">{{ expected() ? '✓' : '' }}</span>
+      <span>
+        <strong>+ expected behavior:</strong> "Saving an edited user should send a PUT with the
+        updated email and show a success toast."
+      </span>
+    </button>
+
+    <div class="lh__compare" aria-live="polite">
+      <div class="meter">
+        <div class="meter__head">
+          <span>you share</span><span class="meter__value">~{{ sharedTokens() }} tokens</span>
+        </div>
+        <div class="meter__track">
+          <div class="meter__fill" [style.width.%]="sharedFill()"></div>
+        </div>
+      </div>
+      <div class="meter">
+        <div class="meter__head">
+          <span>full log</span
+          ><span class="meter__value">~{{ fullLogTokens.toLocaleString() }} tokens</span>
+        </div>
+        <div class="meter__track">
+          <div class="meter__fill meter__fill--danger" style="width: 100%"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lab-actions">
+      <button
+        type="button"
+        class="button button--primary"
+        (click)="submit()"
+        [disabled]="picked().size === 0"
+      >
+        share with copilot →
+      </button>
+      <button type="button" class="button button--ghost button--small" (click)="reset()">
+        reset
+      </button>
+      <span class="lab-hint"
+        >signal found: {{ submitted() ? found() + '/' + totalSignal : '?' }}</span
+      >
+    </div>
+
+    @if (submitted()) {
+      @if (isSolved()) {
+        <div class="verdict verdict--success">
+          <p class="verdict__title">✓ signal, not volume</p>
+          <p class="verdict__text">
+            The failing request, the error, the two frames in <em>your</em> code, and what should
+            have happened. That's about {{ sharedTokens() }} tokens instead of
+            {{ fullLogTokens.toLocaleString() }}.
+          </p>
+        </div>
+      } @else {
+        <div class="verdict verdict--warning">
+          <p class="verdict__title">
+            ~ {{ found() }}/{{ totalSignal }} signal lines, {{ noise() }} noise
+          </p>
+          <p class="verdict__text">
+            @if (found() !== totalSignal) {
+              Missed lines are outlined in red. Look for the failing request and frames in your own
+              files.
+            }
+            @if (noise() > 1) {
+              Framework internals and dev-server chatter rarely help.
+            }
+            @if (!expected()) {
+              Don't forget what "fixed" should look like.
+            }
+          </p>
+        </div>
+      }
+    }
+  </div>
+</div>

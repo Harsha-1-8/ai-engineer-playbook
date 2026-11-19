@@ -1,0 +1,63 @@
+<dialog
+  #dialog
+  class="palette"
+  aria-label="Command palette"
+  (close)="onDialogClose()"
+  (click)="onDialogClick($event)"
+>
+  <div class="palette__panel">
+    <div class="palette__search">
+      <span class="palette__prompt mono" aria-hidden="true">›</span>
+      <input
+        #input
+        class="palette__input"
+        type="text"
+        role="combobox"
+        aria-autocomplete="list"
+        aria-controls="palette-results"
+        [attr.aria-activedescendant]="results().length ? 'cmd-' + active() : null"
+        aria-expanded="true"
+        placeholder="Search episodes, pages, actions…"
+        autocomplete="off"
+        spellcheck="false"
+        [value]="query()"
+        (input)="onInput(input.value)"
+        (keydown)="onKeydown($event)"
+      />
+      <kbd class="palette__esc">esc</kbd>
+    </div>
+
+    <ul id="palette-results" class="palette__list" role="listbox" aria-label="Results">
+      @for (cmd of results(); track cmd.id; let i = $index) {
+        @if (showGroup(i)) {
+          <li class="palette__group mono" role="presentation">{{ cmd.group }}</li>
+        }
+        <li
+          class="palette__item"
+          role="option"
+          [id]="'cmd-' + i"
+          [attr.aria-selected]="i === active()"
+          [class.is-active]="i === active()"
+          (mousemove)="active() !== i && active.set(i)"
+          (click)="run(cmd)"
+        >
+          <span class="palette__icon" aria-hidden="true">{{ cmd.icon }}</span>
+          <span class="palette__label">{{ cmd.label }}</span>
+          @if (cmd.hint) {
+            <span class="palette__hint mono">{{ cmd.hint }}</span>
+          }
+        </li>
+      } @empty {
+        <li class="palette__empty" role="presentation">No matches for “{{ query() }}”.</li>
+      }
+    </ul>
+
+    <footer class="palette__footer mono" aria-hidden="true">
+      <span><kbd>↑</kbd><kbd>↓</kbd> navigate</span>
+      <span><kbd>↵</kbd> open</span>
+      <span
+        ><kbd>{{ palette.shortcut }}</kbd> toggle</span
+      >
+    </footer>
+  </div>
+</dialog>

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>The AI Engineer Playbook</title>
+    <base href="/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a0c11" />
+    <script>
+      // Apply the saved (or OS) theme before Angular boots to avoid a flash of
+      // the wrong colours. Keep the key in sync with ThemeService.
+      (function () {
+        try {
+          var t = localStorage.getItem('aep.theme');
+          if (t !== 'light' && t !== 'dark') {
+            t = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+          }
+          document.documentElement.setAttribute('data-theme', t);
+          document.documentElement.style.colorScheme = t;
+        } catch (e) {}
+      })();
+    </script>
+    <meta
+      name="description"
+      content="An interactive, eight-episode playbook for working effectively with AI coding assistants: focused context, fresh chats, the right model, and verifying what AI writes."
+    />
+    <meta property="og:title" content="The AI Engineer Playbook" />
+    <meta
+      property="og:description"
+      content="Eight short episodes, eight hands-on labs. Learn to get more out of AI coding assistants."
+    />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="The AI Engineer Playbook" />
+    <!-- Link previews (WhatsApp, LinkedIn, Slack, X) need absolute URLs. -->
+    <meta property="og:url" content="https://harsha-1-8.github.io/ai-engineer-playbook/" />
+    <meta
+      property="og:image"
+      content="https://harsha-1-8.github.io/ai-engineer-playbook/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="The AI Engineer Playbook: Get more out of AI. Waste less of it."
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+    <link rel="alternate icon" type="image/x-icon" href="favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
+    />
+  </head>
+  <body>
+    <app-root></app-root>
+  </body>
+</html>

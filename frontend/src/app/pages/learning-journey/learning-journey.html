@@ -1,0 +1,110 @@
+<section class="section journey">
+  <div class="section__inner">
+    <header class="journey__head">
+      <div>
+        <p class="eyebrow">learning journey</p>
+        <h1 class="section__title">Chapter 1: The AI Engineer Playbook</h1>
+        <p class="section__lead">
+          Eight episodes, in order. Each one is a short story, a lab and a quiz.
+        </p>
+      </div>
+
+      <div class="summary" aria-live="polite">
+        <div class="meter">
+          <div class="meter__head">
+            <span>chapter progress</span>
+            <span class="meter__value"
+              >{{ progress.completedCount() }}/{{ progress.totalCount }}</span
+            >
+          </div>
+          <div class="meter__track">
+            <div class="meter__fill" [style.width.%]="progress.percent()"></div>
+          </div>
+        </div>
+        @if (progress.completedCount() > 0) {
+          <button type="button" class="summary__reset mono" (click)="reset()">
+            {{ confirmingReset() ? 'click again to wipe progress + trophies' : 'reset progress' }}
+          </button>
+        }
+      </div>
+    </header>
+
+    <div class="window log">
+      <div class="window__bar">
+        <span class="window__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+        <span class="window__title">git log --graph --oneline chapter-1</span>
+      </div>
+      <ol class="log__list">
+        @for (ep of episodes; track ep.slug) {
+          @let done = progress.isComplete(ep.slug);
+          @let current = progress.nextUp()?.slug === ep.slug;
+          <li
+            class="log__item"
+            [class.is-done]="done"
+            [class.is-current]="current"
+            [class.is-finale]="ep.finale"
+          >
+            <span class="log__graph" aria-hidden="true"><span class="log__node"></span></span>
+            <a class="log__entry" [routerLink]="['/episodes', ep.slug]">
+              <span class="log__meta mono">
+                <span class="log__hash">{{ hash(ep.slug) }}</span>
+                <span class="log__ref">{{
+                  ep.finale ? '(HEAD → finale)' : 'EP ' + pad(ep.number)
+                }}</span>
+                @if (done) {
+                  <span class="tag tag--accent">✓ complete</span>
+                } @else if (current) {
+                  <span class="tag tag--cool">● up next</span>
+                }
+              </span>
+              <span class="log__title" [style.view-transition-name]="'ep-title-' + ep.number">{{
+                ep.title
+              }}</span>
+              <span class="log__summary">{{ ep.summary }}</span>
+              <span class="log__foot mono">
+                <span>⏱ {{ ep.durationMinutes }} min</span>
+                <span>▶ {{ labName(ep.lab) }}</span>
+                <span class="log__go">open →</span>
+              </span>
+            </a>
+          </li>
+        }
+      </ol>
+    </div>
+
+    <!-- Trophy shelf -->
+    <section id="achievements" class="trophies" aria-labelledby="trophies-title">
+      <header class="trophies__head">
+        <div>
+          <p class="eyebrow">achievements</p>
+          <h2 id="trophies-title" class="trophies__title">Trophy shelf</h2>
+        </div>
+        <p class="trophies__count mono">
+          {{ achievements.unlockedCount() }}/{{ achievements.total }} unlocked
+        </p>
+      </header>
+
+      <ul class="trophies__grid" role="list">
+        @for (a of achievements.all(); track a.id) {
+          @let secret = a.hidden && !a.unlockedAt;
+          <li class="trophy" [class.is-unlocked]="!!a.unlockedAt">
+            <span class="trophy__icon" aria-hidden="true">{{ secret ? '?' : a.icon }}</span>
+            <span class="trophy__body">
+              <span class="trophy__title">{{ secret ? '???' : a.title }}</span>
+              <span class="trophy__desc">
+                {{
+                  secret ? 'A hidden achievement. Developers know the magic word.' : a.description
+                }}
+              </span>
+            </span>
+            @if (a.unlockedAt) {
+              <span class="trophy__date mono">{{ formatDate(a.unlockedAt) }}</span>
+            } @else {
+              <span class="visually-hidden">Locked</span>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+  </div>
+</section>

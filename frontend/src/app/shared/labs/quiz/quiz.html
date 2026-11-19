@@ -1,0 +1,63 @@
+<div class="quiz">
+  @if (!done()) {
+    @let q = question();
+    <div class="quiz__head">
+      <span class="quiz__count">Q{{ position() + 1 }}/{{ questions().length }}</span>
+      @if (bestScore() !== null) {
+        <span class="tag">best: {{ bestScore() }}/{{ questions().length }}</span>
+      }
+    </div>
+    <p class="quiz__prompt">{{ q.prompt }}</p>
+
+    <ul class="quiz__options" role="list">
+      @for (option of q.options; track $index) {
+        <li>
+          <button
+            type="button"
+            class="option"
+            [class.option--correct]="optionState($index) === 'correct'"
+            [class.option--wrong]="optionState($index) === 'wrong'"
+            [disabled]="selected() !== null"
+            (click)="choose($index)"
+          >
+            <span class="quiz__letter" aria-hidden="true">{{ letter($index) }}</span>
+            <span>{{ option }}</span>
+          </button>
+        </li>
+      }
+    </ul>
+
+    @if (selected() !== null) {
+      <div
+        class="verdict"
+        [class.verdict--success]="isCorrect()"
+        [class.verdict--danger]="!isCorrect()"
+        aria-live="polite"
+      >
+        <p class="verdict__title">{{ isCorrect() ? '✓ correct' : '✗ not quite' }}</p>
+        <p class="verdict__text">{{ q.explanation }}</p>
+      </div>
+      <div class="lab-actions">
+        <button type="button" class="button button--primary" (click)="next()">
+          {{ isLast() ? 'finish' : 'next question →' }}
+        </button>
+      </div>
+    }
+  } @else {
+    <div class="quiz__result">
+      <p class="quiz__score">
+        {{ score() }}<span>/{{ questions().length }}</span>
+      </p>
+      <p class="quiz__msg">
+        {{
+          score() === questions().length
+            ? 'Perfect. This one stuck.'
+            : 'Good run. The explanations above are worth a second look.'
+        }}
+      </p>
+      <button type="button" class="button button--ghost button--small" (click)="restart()">
+        retake
+      </button>
+    </div>
+  }
+</div>

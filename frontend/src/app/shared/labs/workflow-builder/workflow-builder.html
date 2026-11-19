@@ -1,0 +1,49 @@
+<div class="window">
+  <div class="window__bar">
+    <span class="window__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="window__title">lab/assemble-the-playbook</span>
+    <span class="tag tag--accent">FINALE</span>
+  </div>
+  <div class="window__body">
+    <p class="lab-brief">
+      <strong>final challenge:</strong> seven episodes, one workflow. Click the steps in the order
+      you'd run them on a real task.
+    </p>
+
+    <ol class="wb__chain" aria-label="Your workflow so far">
+      @for (step of steps(); track $index) {
+        <li class="wb__slot" [class.is-filled]="isPlaced($index)">
+          <span class="wb__slot-no">{{ $index + 1 }}</span>
+          <span class="wb__slot-label">{{ isPlaced($index) ? step.label : '…' }}</span>
+        </li>
+      }
+    </ol>
+
+    @if (!done()) {
+      <div class="wb__pool" aria-live="polite">
+        @for (i of pool(); track i) {
+          @if (!isPlaced(i)) {
+            <button type="button" class="wb__chip" [class.shake]="wrong() === i" (click)="pick(i)">
+              {{ steps()[i].label }}
+            </button>
+          }
+        }
+      </div>
+      <p class="lab-hint">
+        hint: you can't verify a result you haven't framed yet · mistakes: {{ mistakes() }}
+      </p>
+    } @else {
+      <div class="verdict verdict--success">
+        <p class="verdict__title">✓ playbook assembled{{ mistakes() === 0 ? ', flawless' : '' }}</p>
+        <p class="verdict__text">
+          Frame → set up → choose → guide → debug → verify. Run it on your next task.
+        </p>
+      </div>
+      <div class="lab-actions">
+        <button type="button" class="button button--ghost button--small" (click)="reset()">
+          replay
+        </button>
+      </div>
+    }
+  </div>
+</div>

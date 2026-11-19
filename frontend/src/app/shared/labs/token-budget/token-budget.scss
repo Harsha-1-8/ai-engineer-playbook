@@ -1,0 +1,106 @@
+.tb {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: var(--space-5);
+}
+
+.tb__files {
+  display: grid;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tb__file {
+  display: grid;
+  flex: 1;
+  min-width: 0;
+}
+
+.tb__name {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  overflow-wrap: anywhere;
+}
+
+.tb__detail {
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+
+.tb__tokens {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+}
+
+.tb__panel {
+  align-self: start;
+  position: sticky;
+  top: calc(var(--header-h) + var(--space-4));
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+
+.tb__stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin: var(--space-4) 0 0;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+
+  dt {
+    color: var(--text-faint);
+  }
+
+  dd {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+  }
+
+  .is-bad {
+    color: var(--warning);
+  }
+}
+
+@media (max-width: 48rem) {
+  .tb {
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+  }
+
+  /* Pinned to the bottom of the screen so the meter stays visible while
+     you tick files further up. */
+  .tb__panel {
+    position: sticky;
+    top: auto;
+    bottom: var(--space-2);
+    z-index: 5;
+    padding: var(--space-3);
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 -12px 30px -12px var(--sheet-shadow);
+  }
+
+  .tb__stats {
+    margin-top: var(--space-3);
+
+    dd {
+      font-size: 0.95rem;
+    }
+  }
+
+  .tb__panel .lab-actions {
+    margin-top: var(--space-3);
+    gap: var(--space-2);
+  }
+
+  .tb__detail {
+    display: none;
+  }
+}

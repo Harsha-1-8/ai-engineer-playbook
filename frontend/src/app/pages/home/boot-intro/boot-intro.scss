@@ -1,0 +1,91 @@
+.boot {
+  position: fixed;
+  inset: 0;
+  z-index: 85;
+  display: grid;
+  place-items: center;
+  padding: var(--space-5);
+  background-color: var(--bg);
+  background-image:
+    radial-gradient(700px 400px at 50% 40%, var(--tint-accent), transparent 70%),
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size:
+    auto,
+    32px 32px,
+    32px 32px;
+  cursor: pointer;
+  transition:
+    opacity 420ms ease,
+    transform 420ms ease;
+}
+
+.boot--leaving {
+  opacity: 0;
+  transform: scale(1.02);
+  pointer-events: none;
+}
+
+.boot__term {
+  width: min(30rem, 100%);
+  min-height: 12rem;
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+}
+
+.boot__line {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-2);
+  margin-bottom: 0.45rem;
+  color: var(--text-muted);
+  animation: line-in 160ms ease-out;
+}
+
+.boot__line--cmd {
+  color: var(--text);
+}
+
+.boot__line--ready {
+  margin-top: var(--space-3);
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.boot__dots {
+  flex: 1;
+  border-bottom: 1px dotted var(--border-strong);
+  transform: translateY(-0.25em);
+}
+
+.boot__ok {
+  color: var(--accent);
+}
+
+.boot__caret {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  background: var(--accent);
+  animation: caret-blink 0.9s steps(1) infinite;
+}
+
+.boot__skip {
+  position: absolute;
+  bottom: var(--space-6);
+  font-size: 0.75rem;
+  color: var(--text-faint);
+}
+
+@keyframes line-in {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+}
+
+@media (max-width: 40rem) {
+  .boot__term {
+    font-size: 0.82rem;
+  }
+}

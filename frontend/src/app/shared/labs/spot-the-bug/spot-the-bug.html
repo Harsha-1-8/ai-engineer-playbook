@@ -1,0 +1,94 @@
+<div class="window">
+  <div class="window__bar">
+    <span class="window__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="window__title">review — user-edit.component.ts (AI-generated)</span>
+    <span class="tag tag--accent">EP 07</span>
+  </div>
+  <div class="window__body">
+    <p class="lab-brief">
+      <strong>code review:</strong> Copilot wrote this and it compiles. Check it against the
+      requirements and click every line you'd flag. There are {{ totalIssues }} problems.
+    </p>
+
+    <div class="sb">
+      <ol class="sb__reqs" aria-label="Requirements">
+        @for (r of requirements; track $index) {
+          <li>
+            <span class="sb__req-no">R{{ $index + 1 }}</span
+            >{{ r }}
+          </li>
+        }
+      </ol>
+
+      <div
+        class="sb__code"
+        role="group"
+        aria-label="Code under review. Activate a line to flag it."
+      >
+        @for (line of lines; track line.no) {
+          <button
+            type="button"
+            class="sb__line"
+            [class.is-flagged]="isFlagged(line.no)"
+            [class.is-hit]="submitted() && !!line.issue && isFlagged(line.no)"
+            [class.is-miss]="submitted() && !!line.issue && !isFlagged(line.no)"
+            [class.is-false]="submitted() && !line.issue && isFlagged(line.no)"
+            [attr.aria-pressed]="isFlagged(line.no)"
+            [disabled]="!line.code.trim()"
+            (click)="toggle(line)"
+          >
+            <span class="sb__no" aria-hidden="true">{{ isFlagged(line.no) ? '⚑' : line.no }}</span>
+            <code class="sb__src">{{ line.code }}</code>
+          </button>
+          @if (submitted() && line.issue) {
+            <p class="sb__note" [class.is-found]="isFlagged(line.no)">
+              <span class="tag" [class.tag--accent]="isFlagged(line.no)">{{
+                line.issue.check
+              }}</span>
+              {{ line.issue.note }}
+            </p>
+          }
+        }
+      </div>
+    </div>
+
+    <div class="lab-actions">
+      <button
+        type="button"
+        class="button button--primary"
+        (click)="submit()"
+        [disabled]="flagged().size === 0"
+      >
+        submit review
+      </button>
+      <button type="button" class="button button--ghost button--small" (click)="reset()">
+        reset
+      </button>
+      <span class="lab-hint">flags: {{ flagged().size }}</span>
+    </div>
+
+    @if (submitted()) {
+      @if (isSolved()) {
+        <div class="verdict verdict--success">
+          <p class="verdict__title">
+            ✓ {{ hits() }}/{{ totalIssues }} caught: you'd have saved a bad merge
+          </p>
+          <p class="verdict__text">
+            Plausible isn't correct. Requirements, impact and results checks catch what a glance
+            misses.
+          </p>
+        </div>
+      } @else {
+        <div class="verdict verdict--warning">
+          <p class="verdict__title">
+            ~ {{ hits() }}/{{ totalIssues }} found, {{ falseFlags() }} false flag(s)
+          </p>
+          <p class="verdict__text">
+            Read each requirement, then look for the code that should satisfy it. Also watch for
+            changes nobody asked for.
+          </p>
+        </div>
+      }
+    }
+  </div>
+</div>

@@ -1,0 +1,23 @@
+<canvas #canvas class="confetti" aria-hidden="true"></canvas>
+
+<div class="toasts" role="status" aria-live="polite">
+  @for (toast of celebration.toasts(); track toast.id) {
+    <div class="toast" [class.toast--gold]="toast.tone === 'gold'">
+      <span class="toast__icon" aria-hidden="true">{{ toast.icon }}</span>
+      <span class="toast__body">
+        <span class="toast__title">{{ toast.title }}</span>
+        @if (toast.detail) {
+          <span class="toast__detail">{{ toast.detail }}</span>
+        }
+      </span>
+      <button
+        type="button"
+        class="toast__close"
+        aria-label="Dismiss"
+        (click)="celebration.dismiss(toast.id)"
+      >
+        ×
+      </button>
+    </div>
+  }
+</div>

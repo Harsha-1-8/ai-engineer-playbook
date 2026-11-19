@@ -1,0 +1,119 @@
+<div class="window">
+  <div class="window__bar">
+    <span class="window__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="window__title">lab/context-builder — bug #142</span>
+    <span class="tag tag--accent">EP 01</span>
+  </div>
+  <div class="window__body">
+    <p class="lab-brief">
+      <strong>bug:</strong> the save button stays disabled after editing a user. Attach the context
+      you'd hand to Copilot, then hit send. Try Rohan's way first if you like.
+    </p>
+
+    <div class="tb">
+      <ul class="tb__files" role="list">
+        @for (item of items; track item.id) {
+          <li>
+            <button
+              type="button"
+              class="option"
+              [attr.aria-pressed]="isSelected(item.id)"
+              (click)="toggle(item.id)"
+            >
+              <span class="check" aria-hidden="true">{{ isSelected(item.id) ? '✓' : '' }}</span>
+              <span class="tb__file">
+                <span class="tb__name">{{ item.name }}</span>
+                <span class="tb__detail">{{ item.detail }}</span>
+              </span>
+              <span class="tb__tokens">{{ format(item.tokens) }}</span>
+            </button>
+          </li>
+        }
+      </ul>
+
+      <aside class="tb__panel" aria-live="polite">
+        <div class="meter">
+          <div class="meter__head">
+            <span>context window</span>
+            <span class="meter__value">{{ format(usedTokens()) }} tokens</span>
+          </div>
+          <div class="meter__track">
+            <div
+              class="meter__fill"
+              [class.meter__fill--warning]="fillTone() === 'warning'"
+              [class.meter__fill--danger]="fillTone() === 'danger'"
+              [style.width.%]="fill()"
+            ></div>
+          </div>
+        </div>
+
+        <dl class="tb__stats">
+          <div>
+            <dt>attached</dt>
+            <dd>{{ selected().size }} / {{ items.length }}</dd>
+          </div>
+          <div>
+            <dt>noise</dt>
+            <dd [class.is-bad]="noiseTokens() > 0">{{ format(noiseTokens()) }}</dd>
+          </div>
+        </dl>
+
+        <div class="lab-actions">
+          <button
+            type="button"
+            class="button button--primary"
+            (click)="send()"
+            [disabled]="selected().size === 0"
+          >
+            send to copilot →
+          </button>
+          <button
+            type="button"
+            class="button button--ghost button--small"
+            (click)="attachEverything()"
+          >
+            do it Rohan's way
+          </button>
+          <button type="button" class="button button--ghost button--small" (click)="reset()">
+            reset
+          </button>
+        </div>
+      </aside>
+    </div>
+
+    @switch (outcome()) {
+      @case ('focused') {
+        <div class="verdict verdict--success">
+          <p class="verdict__title">✓ fixed in one focused pass</p>
+          <p class="verdict__text">
+            {{ format(usedTokens()) }} tokens and zero noise. Copilot went straight to the
+            <code>[disabled]</code> binding. That's Neel's approach.
+          </p>
+        </div>
+      }
+      @case ('bloated') {
+        <div class="verdict verdict--warning">
+          <p class="verdict__title">~ fixed, eventually</p>
+          <p class="verdict__text">
+            It worked, but Copilot had to process about <strong>{{ overhead() }}×</strong> more than
+            the task needed ({{ format(noiseTokens()) }} tokens of noise). Remove what the bug
+            doesn't need.
+          </p>
+        </div>
+      }
+      @case ('missing') {
+        <div class="verdict verdict--danger">
+          <p class="verdict__title">✗ copilot is guessing</p>
+          <p class="verdict__text">
+            Missing:
+            @for (m of missing(); track m.id) {
+              <code>{{ m.name }}</code
+              >{{ $last ? '.' : ', ' }}
+            }
+            Without it there's nothing concrete to fix against.
+          </p>
+        </div>
+      }
+    }
+  </div>
+</div>

@@ -1,0 +1,123 @@
+.aa__progress {
+  display: flex;
+  gap: 6px;
+  margin-bottom: var(--space-4);
+}
+
+.aa__pip {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--surface-3);
+  transition: background-color 200ms ease;
+
+  &.is-done {
+    background: var(--accent);
+  }
+}
+
+.aa__card {
+  padding: var(--space-6) var(--space-5);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(160deg, var(--surface-2), var(--surface));
+  text-align: center;
+  animation: card-in 280ms ease-out;
+}
+
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) rotate(-1deg);
+  }
+}
+
+.aa__situation {
+  max-width: 34rem;
+  margin-inline: auto;
+  font-size: 1.15rem;
+  font-weight: 600;
+  line-height: 1.45;
+}
+
+.aa__choices {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-4);
+  margin-top: var(--space-6);
+}
+
+.aa__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 9rem;
+  justify-content: center;
+  padding: 0.8rem 1.4rem;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform 140ms ease,
+    border-color 140ms ease,
+    box-shadow 140ms ease;
+
+  &:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.aa__btn--ask:hover {
+  border-color: var(--sky);
+  box-shadow: 0 0 24px -8px var(--sky);
+}
+
+.aa__btn--agent:hover {
+  border-color: var(--violet);
+  box-shadow: 0 0 24px -8px var(--violet);
+}
+
+.aa__icon {
+  display: inline-grid;
+  place-items: center;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 50%;
+  background: var(--surface-3);
+  font-size: 0.8rem;
+}
+
+.aa__card--answered {
+  text-align: left;
+}
+
+@media (hover: none) {
+  .aa__btn:hover {
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+@media (max-width: 40rem) {
+  .aa__card {
+    padding: var(--space-5) var(--space-4);
+  }
+
+  .aa__situation {
+    font-size: 1.02rem;
+  }
+
+  .aa__choices {
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+  }
+
+  .aa__btn {
+    flex: 1;
+    min-width: 0;
+    padding: 1rem 0.5rem;
+  }
+}

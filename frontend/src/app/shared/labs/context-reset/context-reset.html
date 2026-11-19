@@ -1,0 +1,134 @@
+<div class="window">
+  <div class="window__bar">
+    <span class="window__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="window__title">copilot-chat — 4h 12m in this thread</span>
+    <span class="tag tag--accent">EP 02</span>
+  </div>
+  <div class="window__body">
+    <p class="lab-brief">
+      <strong>new ticket:</strong> add a "Download CSV" button to the reports table. It has nothing
+      to do with this morning's auth work. What do you do?
+    </p>
+
+    <div class="cr">
+      <ol
+        class="cr__thread"
+        [class.cr__thread--faded]="phase() !== 'decide' && phase() !== 'continued'"
+        aria-label="Earlier conversation"
+      >
+        @for (m of history; track $index) {
+          <li class="cr__msg" [class.cr__msg--ai]="m.who === 'ai'">
+            <span class="cr__who">{{ m.who }}</span
+            >{{ m.text }}
+          </li>
+        }
+        @if (phase() === 'continued') {
+          <li class="cr__msg">
+            <span class="cr__who">you</span>Add a Download CSV button to the reports table.
+          </li>
+          <li class="cr__msg cr__msg--ai cr__msg--confused">
+            <span class="cr__who">ai</span>Sure! Since we moved refresh into AuthInterceptor, I've
+            also guarded the export route, renamed the CSV service to
+            <code>sessionCsvStore</code> for consistency, and reverted the mock from earlier…
+          </li>
+        }
+      </ol>
+
+      <div class="cr__side" aria-live="polite">
+        <div class="meter">
+          <div class="meter__head">
+            <span>focus on the new task</span>
+            <span class="meter__value">{{ phase() === 'decide' ? '—' : focus() + '%' }}</span>
+          </div>
+          <div class="meter__track">
+            <div
+              class="meter__fill"
+              [class.meter__fill--warning]="focus() < 80 && focus() >= 45"
+              [class.meter__fill--danger]="focus() < 45"
+              [style.width.%]="phase() === 'decide' ? 0 : focus()"
+            ></div>
+          </div>
+        </div>
+
+        @switch (phase()) {
+          @case ('decide') {
+            <div class="lab-actions">
+              <button type="button" class="button button--ghost" (click)="continueChat()">
+                keep going in this chat
+              </button>
+              <button type="button" class="button button--primary" (click)="startFresh()">
+                start a fresh chat
+              </button>
+            </div>
+          }
+          @case ('continued') {
+            <div class="verdict verdict--warning">
+              <p class="verdict__title">~ the old thread leaked in</p>
+              <p class="verdict__text">
+                The morning's auth work, renames and dead ends all came along. The reply mixes three
+                topics.
+              </p>
+            </div>
+            <div class="lab-actions">
+              <button type="button" class="button button--primary" (click)="startFresh()">
+                try a fresh chat
+              </button>
+            </div>
+          }
+          @case ('carry') {
+            <p class="cr__q">What comes with you into the new chat?</p>
+            <ul class="cr__carry" role="list">
+              @for (item of carryItems; track item.id) {
+                <li>
+                  <button
+                    type="button"
+                    class="option"
+                    [attr.aria-pressed]="isCarried(item.id)"
+                    (click)="toggle(item.id)"
+                  >
+                    <span class="check" aria-hidden="true">{{
+                      isCarried(item.id) ? '✓' : ''
+                    }}</span>
+                    <span>{{ item.label }}</span>
+                  </button>
+                </li>
+              }
+            </ul>
+            <div class="lab-actions">
+              <button type="button" class="button button--primary" (click)="launch()">
+                open new chat →
+              </button>
+            </div>
+            @if (attempted()) {
+              <div class="verdict verdict--danger">
+                <p class="verdict__title">✗ not quite</p>
+                <p class="verdict__text">
+                  @if (missing().length) {
+                    The new task still needs: {{ missing()[0].label }}.
+                  }
+                  @if (baggage().length) {
+                    Leave behind: {{ baggage()[0].label }}.
+                  }
+                </p>
+              </div>
+            }
+          }
+          @case ('done') {
+            <div class="verdict verdict--success">
+              <p class="verdict__title">✓ clean start</p>
+              <p class="verdict__text">
+                A fresh chat with just the component and the CSV requirements. The reply is only
+                about CSV export.
+              </p>
+            </div>
+            <div class="lab-actions">
+              <button type="button" class="button button--ghost button--small" (click)="restart()">
+                replay
+              </button>
+            </div>
+          }
+        }
+      </div>
+    </div>
+  </div>
+</div>

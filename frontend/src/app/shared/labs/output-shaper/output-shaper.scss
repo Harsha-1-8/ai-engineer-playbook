@@ -1,0 +1,134 @@
+.os__tabs {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+
+.os__tab {
+  padding: 0.35rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  cursor: pointer;
+
+  &[aria-selected='true'] {
+    border-color: var(--accent-line);
+    color: var(--accent);
+  }
+}
+
+.os {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+  gap: var(--space-5);
+}
+
+.os__controls {
+  display: grid;
+  gap: var(--space-4);
+  align-content: start;
+}
+
+.os__group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  legend {
+    margin-bottom: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-faint);
+  }
+}
+
+.os__seg {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  cursor: pointer;
+
+  &[aria-pressed='true'] {
+    border-color: var(--accent-line);
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+}
+
+.os__preview {
+  padding: var(--space-4);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+}
+
+.os__prompt {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--text);
+}
+
+.os__ps1 {
+  color: var(--accent);
+}
+
+.os__response {
+  display: grid;
+  gap: 6px;
+  margin: var(--space-4) 0 var(--space-3);
+  padding-left: var(--space-3);
+  border-left: 2px solid var(--violet);
+}
+
+.os__bar {
+  height: 7px;
+  border-radius: 4px;
+  background: var(--surface-3);
+  animation: verdict-in 240ms ease-out;
+}
+
+.os__more {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--warning);
+}
+
+@media (max-width: 48rem) {
+  .os {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 40rem) {
+  .os__tabs {
+    overflow-x: auto;
+  }
+
+  .os__tab {
+    flex: none;
+    padding: 0.5rem 0.8rem;
+  }
+
+  .os__group {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+  }
+
+  .os__seg {
+    padding: 0.6rem 0.5rem;
+  }
+
+  .os__preview {
+    padding: var(--space-3);
+  }
+}

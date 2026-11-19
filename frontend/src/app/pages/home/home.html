@@ -1,0 +1,164 @@
+<app-boot-intro />
+
+<!-- Hero -->
+<section class="hero">
+  <div class="section__inner hero__grid">
+    <div class="hero__copy">
+      <p class="eyebrow">an interactive playbook for AI-assisted coding</p>
+      <h1 class="hero__title">
+        Get more out of AI.
+        <span class="hero__accent">Waste less of it.</span>
+      </h1>
+      <p class="hero__lead">
+        Eight short episodes on the habits that make AI coding assistants actually useful: focused
+        context, fresh chats, the right model, and verifying what they write. Every episode has a
+        lab you play, not just read.
+      </p>
+      <div class="hero__actions">
+        <a class="button button--primary" [routerLink]="['/episodes', cta().slug]"
+          >{{ cta().label }} →</a
+        >
+        <a class="button button--ghost" routerLink="/journey">browse the journey</a>
+      </div>
+    </div>
+
+    <div class="window hero__demo" aria-hidden="true">
+      <div class="window__bar">
+        <span class="window__dots"><span></span><span></span><span></span></span>
+        <span class="window__title">prompt.diff</span>
+      </div>
+      <div class="demo">
+        <p class="demo__line demo__line--del">- context: src/** &nbsp;(214 files)</p>
+        <p class="demo__line demo__line--del">- context: build.log &nbsp;(712 lines)</p>
+        <p class="demo__line demo__line--add">+ context: user-edit.component.ts</p>
+        <p class="demo__line demo__line--add">+ error: save stays disabled after edit</p>
+        <p class="demo__line demo__line--add">+ expected: save enables when the form is valid</p>
+        <div class="demo__meter">
+          <span class="demo__meter-label">context window</span>
+          <span class="demo__meter-track"><span class="demo__meter-fill"></span></span>
+        </div>
+        <p class="demo__result"><span>›</span> fixed in one focused pass</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="section__inner">
+    <dl class="stats">
+      @for (stat of stats; track stat.label) {
+        <div class="stats__item">
+          <dt>{{ stat.label }}</dt>
+          <dd [appCountUp]="stat.value" [countPrefix]="stat.prefix ?? ''"></dd>
+        </div>
+      }
+    </dl>
+  </div>
+</section>
+
+<!-- Origin -->
+<section class="section">
+  <div class="section__inner origin">
+    <div>
+      <p class="eyebrow">origin story</p>
+      <h2 class="section__title">It started as an R&amp;D side quest at work.</h2>
+    </div>
+    <div class="origin__body">
+      <p>
+        When an AI-assistant pricing change was on the horizon, I started digging into a simple
+        question:
+        <em
+          >can we get the same results from GitHub Copilot while spending fewer tokens, without the
+          quality dropping?</em
+        >
+      </p>
+      <p>
+        The answers turned out to be habits, not hacks: how much context you hand over, when you
+        start a fresh chat, which model you pick, how you share logs and shape output, and how you
+        verify what comes back. I wrote them up as a short episodic series for fellow developers.
+      </p>
+      <p>
+        This is the public, interactive remake: the same lessons, rebuilt so you can
+        <strong>play</strong>
+        with each idea instead of just reading about it.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- Episodes -->
+<section class="section section--tinted">
+  <div class="section__inner">
+    <div class="section__header">
+      <p class="eyebrow">the series</p>
+      <h2 class="section__title">Seven habits and a finale</h2>
+      <p class="section__lead">
+        Each episode follows Rohan and Neel as they tackle the same task two different ways.
+      </p>
+    </div>
+
+    <ol class="grid">
+      @for (ep of episodes; track ep.slug) {
+        <li>
+          <a
+            class="card"
+            [class.card--done]="progress.isComplete(ep.slug)"
+            [class.card--finale]="ep.finale"
+            [routerLink]="['/episodes', ep.slug]"
+          >
+            <span class="card__top mono">
+              <span>{{ ep.finale ? 'FINALE' : 'EP ' + pad(ep.number) }}</span>
+              <span class="card__state">{{
+                progress.isComplete(ep.slug) ? '✓ done' : (ep.durationMinutes ?? 5) + ' min'
+              }}</span>
+            </span>
+            <span class="card__title" [style.view-transition-name]="'ep-title-' + ep.number">{{
+              ep.title
+            }}</span>
+            <span class="card__lab mono">▶ lab: {{ labName(ep.lab) }}</span>
+          </a>
+        </li>
+      }
+    </ol>
+  </div>
+</section>
+
+<!-- How it works -->
+<section class="section">
+  <div class="section__inner">
+    <div class="section__header">
+      <p class="eyebrow">how it works</p>
+      <h2 class="section__title">Read it. Play it. Prove it.</h2>
+    </div>
+    <ol class="steps">
+      <li class="steps__item">
+        <span class="steps__cmd mono">$ read</span>
+        <h3>A five-minute story</h3>
+        <p>Two developers, one task, two approaches. See what changes and why.</p>
+      </li>
+      <li class="steps__item">
+        <span class="steps__cmd mono">$ play</span>
+        <h3>A hands-on lab</h3>
+        <p>
+          Build a context window, hunt a log, route a backlog, review AI code. Get it wrong safely.
+        </p>
+      </li>
+      <li class="steps__item">
+        <span class="steps__cmd mono">$ check</span>
+        <h3>A quick quiz</h3>
+        <p>Three questions with explanations. Your progress is saved in your browser.</p>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="section">
+  <div class="section__inner">
+    <div class="cta">
+      <p class="cta__prompt mono"><span>~</span> $ playbook start<span class="caret"></span></p>
+      <h2 class="section__title">Ten minutes from now you'll prompt differently.</h2>
+      <a class="button button--primary" [routerLink]="['/episodes', cta().slug]"
+        >{{ cta().label }} →</a
+      >
+    </div>
+  </div>
+</section>

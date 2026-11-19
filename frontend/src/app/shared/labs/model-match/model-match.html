@@ -1,0 +1,76 @@
+<div class="window">
+  <div class="window__bar">
+    <span class="window__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="window__title">lab/model-router — today's backlog</span>
+    <span class="tag tag--accent">EP 03</span>
+  </div>
+  <div class="window__body">
+    <p class="lab-brief">
+      <strong>route the backlog:</strong> send each task to a <em>lighter</em> model or a
+      <em>reasoning</em> model. Rohan sends everything to the biggest one. Don't be Rohan.
+    </p>
+
+    <ul class="mm" role="list">
+      @for (task of tasks; track task.id) {
+        <li class="mm__row" [class.shake]="isWrong(task)" [class.mm__row--wrong]="isWrong(task)">
+          <span class="mm__text">{{ task.text }}</span>
+          <span class="mm__switch" role="group" [attr.aria-label]="'Model for: ' + task.text">
+            <button
+              type="button"
+              class="mm__opt"
+              [attr.aria-pressed]="pickOf(task) === 'light'"
+              (click)="pick(task, 'light')"
+            >
+              ⚡ lighter
+            </button>
+            <button
+              type="button"
+              class="mm__opt mm__opt--deep"
+              [attr.aria-pressed]="pickOf(task) === 'reasoning'"
+              (click)="pick(task, 'reasoning')"
+            >
+              🧠 reasoning
+            </button>
+          </span>
+          @if (checked()) {
+            <span class="mm__why" [class.is-ok]="!isWrong(task)">
+              {{ isWrong(task) ? '✗' : '✓' }} {{ task.why }}
+            </span>
+          }
+        </li>
+      }
+    </ul>
+
+    <div class="lab-actions">
+      <button
+        type="button"
+        class="button button--primary"
+        (click)="check()"
+        [disabled]="answered() < tasks.length"
+      >
+        check routing ({{ answered() }}/{{ tasks.length }})
+      </button>
+      <button type="button" class="button button--ghost button--small" (click)="reset()">
+        reset
+      </button>
+    </div>
+
+    @if (checked()) {
+      @if (score() === tasks.length) {
+        <div class="verdict verdict--success">
+          <p class="verdict__title">✓ {{ score() }}/{{ tasks.length }}: perfectly routed</p>
+          <p class="verdict__text">
+            Simple work gets a fast model and the hard problems get the reasoning they need.
+          </p>
+        </div>
+      } @else {
+        <div class="verdict verdict--warning">
+          <p class="verdict__title">~ {{ score() }}/{{ tasks.length }} routed well</p>
+          <p class="verdict__text">
+            Ask: is the goal narrow with an obvious "done", or open-ended with trade-offs?
+          </p>
+        </div>
+      }
+    }
+  </div>
+</div>

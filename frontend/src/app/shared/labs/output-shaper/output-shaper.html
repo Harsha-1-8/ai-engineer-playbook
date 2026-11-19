@@ -1,0 +1,106 @@
+<div class="window">
+  <div class="window__bar">
+    <span class="window__dots" aria-hidden="true"><span></span><span></span><span></span></span>
+    <span class="window__title"
+      >lab/prompt-shaper — scenario {{ index() + 1 }}/{{ scenarios.length }}</span
+    >
+    <span class="tag tag--accent">EP 05</span>
+  </div>
+  <div class="window__body">
+    <div class="os__tabs" role="tablist" aria-label="Scenarios">
+      @for (s of scenarios; track $index) {
+        <button
+          type="button"
+          role="tab"
+          class="os__tab"
+          [attr.aria-selected]="index() === $index"
+          (click)="goTo($index)"
+        >
+          {{ cleared().has($index) ? '✓' : '○' }} scenario {{ $index + 1 }}
+        </button>
+      }
+    </div>
+
+    <p class="lab-brief"><strong>need:</strong> {{ scenario().brief }}</p>
+
+    <div class="os">
+      <div class="os__controls">
+        <fieldset class="os__group">
+          <legend>scope</legend>
+          @for (c of scopes; track c.value) {
+            <button
+              type="button"
+              class="os__seg"
+              [attr.aria-pressed]="scope() === c.value"
+              (click)="setScope(c.value)"
+            >
+              {{ c.label }}
+            </button>
+          }
+        </fieldset>
+        <fieldset class="os__group">
+          <legend>format</legend>
+          @for (c of formats; track c.value) {
+            <button
+              type="button"
+              class="os__seg"
+              [attr.aria-pressed]="format() === c.value"
+              (click)="setFormat(c.value)"
+            >
+              {{ c.label }}
+            </button>
+          }
+        </fieldset>
+        <fieldset class="os__group">
+          <legend>depth</legend>
+          @for (c of depths; track c.value) {
+            <button
+              type="button"
+              class="os__seg"
+              [attr.aria-pressed]="depth() === c.value"
+              (click)="setDepth(c.value)"
+            >
+              {{ c.label }}
+            </button>
+          }
+        </fieldset>
+      </div>
+
+      <div class="os__preview">
+        <p class="os__prompt"><span class="os__ps1">you ›</span> {{ prompt() }}</p>
+        <div class="os__response" aria-hidden="true">
+          @for (w of skeleton(); track $index) {
+            <span class="os__bar" [style.width.%]="w"></span>
+          }
+          @if (lines() > 18) {
+            <span class="os__more">… {{ lines() - 18 }} more lines</span>
+          }
+        </div>
+        <p class="lab-hint">response ≈ {{ lines() }} lines</p>
+      </div>
+    </div>
+
+    <div class="lab-actions">
+      <button type="button" class="button button--primary" (click)="send()">send prompt →</button>
+      @if (canAdvance()) {
+        <button type="button" class="button button--ghost" (click)="goTo(index() + 1)">
+          next scenario →
+        </button>
+      }
+    </div>
+
+    @if (checked()) {
+      @if (mismatches().length === 0) {
+        <div class="verdict verdict--success">
+          <p class="verdict__title">✓ {{ allCleared() ? 'both needs met' : 'right-sized' }}</p>
+          <p class="verdict__text">{{ scenario().win }}</p>
+        </div>
+      } @else {
+        <div class="verdict verdict--warning">
+          <p class="verdict__title">~ the answer misses the need</p>
+          <p class="verdict__text">{{ mismatches().join(' · ') }}</p>
+        </div>
+      }
+    }
+  </div>
+</div>

@@ -1,0 +1,84 @@
+<header class="site-header">
+  <div class="site-header__inner">
+    <a
+      class="brand"
+      routerLink="/"
+      aria-label="The AI Engineer Playbook — home"
+      (click)="onBrandClick($event)"
+    >
+      <span class="brand__mark" aria-hidden="true">&gt;_</span>
+      <span class="brand__text">ai-engineer<span class="brand__dim">.playbook</span></span>
+    </a>
+
+    <nav class="site-nav" aria-label="Primary">
+      <ul class="site-nav__list">
+        <li class="site-nav__item--home">
+          <a
+            class="site-nav__link"
+            routerLink="/"
+            routerLinkActive="is-active"
+            [routerLinkActiveOptions]="{ exact: true }"
+            >home</a
+          >
+        </li>
+        <li>
+          <a class="site-nav__link" routerLink="/journey" routerLinkActive="is-active">journey</a>
+        </li>
+      </ul>
+
+      <button
+        type="button"
+        class="search-trigger"
+        aria-label="Open command palette"
+        [attr.aria-keyshortcuts]="palette.shortcut === '⌘K' ? 'Meta+K' : 'Control+K'"
+        (click)="palette.open()"
+      >
+        <svg class="search-trigger__icon" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="11" cy="11" r="6.5" />
+          <path d="m20 20-4.2-4.2" />
+        </svg>
+        <span class="search-trigger__text">search</span>
+        <kbd class="search-trigger__kbd">{{ palette.shortcut }}</kbd>
+      </button>
+
+      <button
+        type="button"
+        class="theme-toggle"
+        [class.is-light]="!isDark()"
+        [attr.aria-label]="toggleLabel()"
+        [attr.title]="toggleLabel()"
+        (click)="theme.toggle()"
+      >
+        <!-- Sun (shown in dark mode: "go light") -->
+        <svg class="theme-toggle__icon theme-toggle__sun" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="4.2" />
+          <path
+            d="M12 2.5v2.2M12 19.3v2.2M4.6 4.6l1.6 1.6M17.8 17.8l1.6 1.6M2.5 12h2.2M19.3 12h2.2M4.6 19.4l1.6-1.6M17.8 6.2l1.6-1.6"
+          />
+        </svg>
+        <!-- Moon (shown in light mode: "go dark") -->
+        <svg class="theme-toggle__icon theme-toggle__moon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M20.2 14.6A8.5 8.5 0 0 1 9.4 3.8a8.5 8.5 0 1 0 10.8 10.8Z" />
+        </svg>
+      </button>
+
+      <a
+        class="progress-pill"
+        [class.is-pop]="ringPop()"
+        routerLink="/journey"
+        [attr.aria-label]="
+          progress.completedCount() + ' of ' + progress.totalCount + ' episodes complete'
+        "
+      >
+        <span
+          class="progress-pill__ring"
+          [style.--p]="progress.percent()"
+          aria-hidden="true"
+        ></span>
+        <span class="progress-pill__text"
+          >{{ progress.completedCount() }}/{{ progress.totalCount }}</span
+        >
+      </a>
+    </nav>
+  </div>
+</header>
